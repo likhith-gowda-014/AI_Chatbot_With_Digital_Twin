@@ -1,22 +1,22 @@
 [
     {
-        "timestamp": "2025-03-02 20:48:31.842668",
+        "timestamp": "2025-03-02 21:17:34.213910",
+        "emotion": "angry"
+    },
+    {
+        "timestamp": "2025-03-02 21:17:37.317362",
         "emotion": "neutral"
     },
     {
-        "timestamp": "2025-03-02 20:48:34.910887",
+        "timestamp": "2025-03-02 21:17:40.389953",
+        "emotion": "angry"
+    },
+    {
+        "timestamp": "2025-03-02 21:17:43.480839",
         "emotion": "neutral"
     },
     {
-        "timestamp": "2025-03-02 20:48:38.104693",
-        "emotion": "neutral"
-    },
-    {
-        "timestamp": "2025-03-02 20:48:41.268041",
-        "emotion": "neutral"
-    },
-    {
-        "timestamp": "2025-03-02 20:48:44.486571",
+        "timestamp": "2025-03-02 21:17:46.580911",
         "emotion": "neutral"
     }
 ]

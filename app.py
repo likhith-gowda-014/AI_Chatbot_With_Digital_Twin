@@ -283,12 +283,25 @@ def chat():
         print(f"Error fetching chat history: {e}")
         past_messages = []
 
-    # Use simple word-matching relevance check
+    # Use similarity check to get relevant past messages
     relevant_history = retrieve_relevant_chats(user_input, past_messages)
 
+    # Ensure we always keep the **most recent message**
+    previous_message = past_messages[-2] if past_messages else ""
+    previous_response = past_messages[-1] if past_messages else ""
+
+    # Build final history: Always include previous message + relevant ones
+    combined_history = []
+    if previous_message and previous_response:
+        combined_history.append(f"User: {previous_message}")
+        combined_history.append(f"AI: {previous_response}")
+
+    if relevant_history:
+        combined_history.extend(relevant_history.split("\n"))  # Append older history after latest message
+        
     full_prompt = (
         "The user is currently feeling " + latest_emotion + ".\n\n" +
-        ("Recent relevant conversations:\n" + relevant_history + "\n\n" if relevant_history else "") +
+        ("Recent relevant conversations:\n" + "\n".join(combined_history) + "\n\n" if relevant_history else "") +
         "Now, only respond to the following user message:\n" +
         "User: " + user_input + "\n" +
         "AI (Respond in one concise reply without assuming further user messages):"
