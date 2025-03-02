@@ -10,6 +10,8 @@ import os
 import bcrypt
 import json
 from datetime import datetime
+from sentence_transformers import util
+import re
 
 app = Flask(__name__)
 app.secret_key = 'Likhi_Nam_0914'  # Change this for better security
@@ -235,9 +237,31 @@ def logout():
 def chatbot():
     return render_template('chatbot.html')
 
+# Function to retrieve relevant past messages using semantic similarity
+def retrieve_relevant_chats(user_input, past_messages, threshold=0.5):
+    if not past_messages:
+        return ""
+
+    # Preprocess user input: lowercase & remove special chars
+    user_words = set(re.findall(r'\w+', user_input.lower()))
+
+    relevant_messages = []
+    
+    for msg in past_messages[-5:]:  # Only check the last 5 messages
+        msg_words = set(re.findall(r'\w+', msg.lower()))
+        
+        # Calculate relevance as word overlap percentage
+        common_words = user_words & msg_words  # Intersection of words
+        relevance_score = len(common_words) / max(len(user_words), 1)  # Avoid divide by zero
+
+        if relevance_score >= threshold:  # If enough words match, include
+            relevant_messages.append(msg)
+
+    return "\n".join(relevant_messages) if relevant_messages else ""
+
 @app.route('/chat', methods=['POST'])
 def chat():
-    user_input = request.json.get('message', '').strip()
+    user_input = request.json.get('message', "").strip()
 
     if not user_input:
         return jsonify({"response": "Please enter a message."})
@@ -245,50 +269,46 @@ def chat():
     # Load the latest detected emotion
     latest_emotion = load_latest_emotion()
 
-    # Fetch relevant chat history using similarity search
+    # Fetch relevant 5 chat history without embeddings
     try:
         search_results = collection.query(
-            query_texts=[user_input],
-            n_results=5  # Fetch top 5 most similar responses
+            query_texts=[user_input],  # Use actual embeddings for better matching
+            n_results=5
         )
-        relevant_history = search_results.get('documents', [])
 
-        # Ensure relevant_history is a list of strings
-        if isinstance(relevant_history, list):
-            chat_history = "\n".join(map(str, relevant_history)) if relevant_history else ""
-        else:
-            chat_history = ""
+        past_messages = search_results.get("documents", [[]])[0]
+        if not past_messages:
+            past_messages = []
     except Exception as e:
         print(f"Error fetching chat history: {e}")
-        chat_history = ""
+        past_messages = []
 
-        # Construct a well-structured prompt
+    # Use simple word-matching relevance check
+    relevant_history = retrieve_relevant_chats(user_input, past_messages)
+
     full_prompt = (
-        f"The user is currently feeling {latest_emotion}.\n"
-        f"Recent chat history:\n{chat_history}\n"
-        f"User's message: {user_input}\n"
-        f"AI response:"
-    )
-    print(
-        f"The user is currently feeling {latest_emotion}.\n"
-        f"Recent chat history:\n{chat_history}\n"
-        f"User's message: {user_input}\n"
-        f"AI response:"
-    )
-    
-    # Generate response
+        "The user is currently feeling " + latest_emotion + ".\n\n" +
+        ("Recent relevant conversations:\n" + relevant_history + "\n\n" if relevant_history else "") +
+        "Now, only respond to the following user message:\n" +
+        "User: " + user_input + "\n" +
+        "AI (Respond in one concise reply without assuming further user messages):"
+    ).strip()
+
+    print(full_prompt)  # Debugging output
+
+    # Generate AI response
     try:
         response = gpt4all_model.generate(full_prompt, max_tokens=800).strip()
     except Exception as e:
         print(f"GPT-4All generation error: {e}")
         response = "Sorry, I couldn't process that request."
 
-    # Store chat interaction in the database
+    # Store chat interaction
     timestamp = str(time.time())
     try:
         collection.add(
             documents=[user_input, response],
-            metadatas=[{"user": session.get('username', 'guest')}, {"user": "AI"}],
+            metadatas=[{"user": session.get('userid', 'guest')}, {"user": "AI"}],
             ids=[f"user_{timestamp}", f"ai_{timestamp}"]
         )
     except Exception as e:
