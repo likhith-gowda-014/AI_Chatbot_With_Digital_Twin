@@ -1,9 +1,0 @@
-flask
-mysql-connector-python
-opencv-python-headless
-deepface
-chromadb
-gpt4all
-numpy
-pandas
-requests
