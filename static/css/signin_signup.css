@@ -1,0 +1,47 @@
+/* signin_signup.css */
+
+body {
+    background-color: #D6E6F2; /* Fog White */
+    color: #1B4965; /* Dark Blue Depths */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+h2 {
+    color: #5E8CAE; /* Frosty Blue */
+}
+
+.btn-custom {
+    background-color: #5E8CAE;
+    color: white;
+    border-radius: 8px;
+}
+
+.btn-custom:hover {
+    background-color: #BFD7EA;
+    color: #1B4965;
+}
+
+.link-custom {
+    color: #1B4965;
+    text-decoration: none;
+}
+
+.link-custom:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    display: block;
+}

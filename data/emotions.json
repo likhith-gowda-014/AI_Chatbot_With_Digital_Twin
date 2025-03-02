@@ -1,0 +1,22 @@
+[
+    {
+        "timestamp": "2025-03-02 16:45:05.784260",
+        "emotion": "fear"
+    },
+    {
+        "timestamp": "2025-03-02 16:45:08.995683",
+        "emotion": "surprise"
+    },
+    {
+        "timestamp": "2025-03-02 16:45:12.258438",
+        "emotion": "neutral"
+    },
+    {
+        "timestamp": "2025-03-02 16:45:15.480824",
+        "emotion": "neutral"
+    },
+    {
+        "timestamp": "2025-03-02 16:45:18.745496",
+        "emotion": "neutral"
+    }
+]

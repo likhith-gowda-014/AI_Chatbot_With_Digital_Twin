@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #D6E6F2; /* Fog White */
+            color: #1B4965; /* Dark Blue Depths */
+            text-align: center;
+            padding: 50px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        h2 {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #5E8CAE; /* Frosty Blue */
+        }
+        .card {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            height: 100%; /* Ensures equal height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-left: 5px solid #BFD7EA; /* Ice Blue Accent */
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+        }
+        .card-title {
+            color: #5E8CAE; /* Frosty Blue */
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        .btn-custom {
+            background: #5E8CAE; /* Frosty Blue */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn-custom:hover {
+            background: #BFD7EA; /* Ice Blue */
+            color: #1B4965; /* Darker Blue */
+        }
+        .logout-btn {
+            background: #D43F3F; /* Logout Red */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            background: #A32D2D;
+        }
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, {{ name }}!</h2>
+        <p>Explore our AI-powered features:</p>
+        
+        <div class="row g-4">
+            <div class="col-md-4 d-flex">
+                <div class="card w-100">
+                    <h3 class="card-title">Digital Twin</h3>
+                    <p>Experience real-time digital representation of physical assets.</p>
+                    <a href="/digital_twin" class="btn-custom">Explore</a>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex">
+                <div class="card w-100">
+                    <h3 class="card-title">Social Connectivity</h3>
+                    <p>Engage in meaningful discussions and stay connected.</p>
+                    <a href="/social_connectivity" class="btn-custom">Connect</a>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex">
+                <div class="card w-100">
+                    <h3 class="card-title">Chatbot</h3>
+                    <p>Chat with our AI-powered assistant for instant support.</p>
+                    <a href="/chatbot" class="btn-custom">Chat Now</a>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</body>
+</html> 
