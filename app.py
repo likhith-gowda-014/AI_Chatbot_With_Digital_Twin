@@ -283,31 +283,53 @@ def chat():
         print(f"Error fetching chat history: {e}")
         past_messages = []
 
+    # Debug: Print all retrieved messages
+    print(f"DEBUG - Fetched past messages: {past_messages}")
+
     # Use similarity check to get relevant past messages
     relevant_history = retrieve_relevant_chats(user_input, past_messages)
 
-    # Ensure we always keep the **most recent message**
-    previous_message = past_messages[-2] if past_messages else ""
-    previous_response = past_messages[-1] if past_messages else ""
+    # Ensure we always keep the most recent user message and AI response
+    previous_message, previous_response = "", ""
 
-    # Build final history: Always include previous message + relevant ones
+    if len(past_messages) >= 2:
+        # Ensure we pick messages correctly
+        if past_messages[-2].startswith("User:") and past_messages[-1].startswith("AI:"):
+            previous_message = past_messages[-2][6:].strip()  # Remove "User: " prefix
+            previous_response = past_messages[-1][4:].strip()  # Remove "AI: " prefix
+        else:
+            # If order is incorrect, swap them if necessary
+            previous_message, previous_response = past_messages[-2], past_messages[-1]
+    elif len(past_messages) == 1:
+        # If only one exists, assume it's a user message
+        previous_message = past_messages[-1]
+
+    # Debug: Check what we retrieved
+    print(f"DEBUG - Final Previous User Message: {previous_message}")
+    print(f"DEBUG - Final Previous AI Response: {previous_response}")
+
+    # Add them to the conversation history correctly
     combined_history = []
-    if previous_message and previous_response:
+    if previous_message:
         combined_history.append(f"User: {previous_message}")
+    if previous_response:
         combined_history.append(f"AI: {previous_response}")
 
+    # Append relevant history (if any)
     if relevant_history:
-        combined_history.extend(relevant_history.split("\n"))  # Append older history after latest message
-        
+        combined_history.extend(relevant_history.split("\n"))
+
+    # Final conversation prompt
     full_prompt = (
-        "The user is currently feeling " + latest_emotion + ".\n\n" +
-        ("Recent relevant conversations:\n" + "\n".join(combined_history) + "\n\n" if relevant_history else "") +
+        f"The user is currently feeling {latest_emotion}.\n\n" +
+        ("Recent relevant conversations:\n" + "\n".join(combined_history) + "\n\n" if combined_history else "") +
         "Now, only respond to the following user message:\n" +
-        "User: " + user_input + "\n" +
+        f"User: {user_input}\n" +
         "AI (Respond in one concise reply without assuming further user messages):"
     ).strip()
 
-    print(full_prompt)  # Debugging output
+    # Debug final prompt
+    print(f"DEBUG - Final Prompt:\n{full_prompt}")
 
     # Generate AI response
     try:
